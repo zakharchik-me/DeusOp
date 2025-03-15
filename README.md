@@ -1,16 +1,43 @@
-## **Docker: докеризация приложения**
+Docker: Containerization of the Application
 
-### **Цель лабораторной**
-Собрать из исходного кода и запустить в докере рабочее приложение с базой данных (любое опенсорс - Java, Python/Django/Flask, Golang).
+Objective of the Lab
 
-### **Требования**
-1. Образ должен быть легковесным.
-2. Использовать базовые легковесные образы - `alpine`.
-3. Вся конфигурация приложения должна быть через переменные окружения.
-4. Статика (зависимости) должна быть внешним томом `volume`.
-5. Создать файл `docker-compose` для старта и сборки.
-6. В `docker-compose` нужно использовать базу данных (`PostgreSQL`, `MySQL`, `MongoDB` и т. д.).
-7. При старте приложения должно быть учтено выполнение автоматических миграций.
-8. Контейнер должен запускаться от непривилегированного пользователя.
-9. После установки всех нужных утилит, должен очищаться кеш.
+Build and run a working application with a database in Docker from the source code (any open-source application - Java, Python/Django/Flask, Golang).
 
+Requirements and Verification
+
+The image must be lightweight.
+
+✅ Use alpine-based images to minimize size.
+
+Use minimal base images - alpine.
+
+✅ Ensure the Dockerfile is based on alpine (e.g., FROM python:3.9-alpine).
+
+All application configuration must be done via environment variables.
+
+✅ Check that docker-compose.yml and Dockerfile use ENV or .env files.
+
+Static files (dependencies) should be managed via an external volume.
+
+✅ Ensure docker-compose.yml has volumes defined for static files.
+
+Create a docker-compose file for startup and build.
+
+✅ Ensure docker-compose.yml exists and defines services properly.
+
+Use a database in docker-compose (PostgreSQL, MySQL, MongoDB, etc.).
+
+✅ Confirm a database service is declared in docker-compose.yml.
+
+Ensure automatic migrations are performed on startup.
+
+✅ The entrypoint script or Dockerfile should include a migration command (e.g., flask db upgrade or python manage.py migrate).
+
+The container should run under a non-root user.
+
+✅ Use USER directive in Dockerfile to specify a non-root user.
+
+After installing necessary utilities, the cache should be cleared.
+
+✅ Ensure the Dockerfile contains commands like rm -rf /var/cache/apk/* after package installation.
