@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  ai-tod:
+    build: ./AI-TOD
+    volumes:
+      - ./AI-TOD:/app
+    environment:
+      - MODEL_PATH=model.pt
+      - POSTGRES_DB=yolodb
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+    depends_on:
+      - db
+    networks:
+      - ai-net
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: yolodb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - ai-net
+
+volumes:
+  pgdata:
+
+networks:
+  ai-net:
