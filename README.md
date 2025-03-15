@@ -1,43 +1,32 @@
-Docker: Containerization of the Application
+## **Docker: Containerization of the Application**
 
-Objective of the Lab
-
+### **Objective of the Lab**
 Build and run a working application with a database in Docker from the source code (any open-source application - Java, Python/Django/Flask, Golang).
 
-Requirements and Verification
+### **Requirements and Verification**
+1. **The image must be lightweight.**
+   - ✅ `alpine`-based images to minimize size.
 
-The image must be lightweight.
+2. **Use minimal base images - `alpine`.**
+   - ✅ `Dockerfile` is based on `alpine` (e.g., `FROM python:3.9-alpine`).
 
-✅ Use alpine-based images to minimize size.
+3. **All application configuration must be done via environment variables.**
+   - ✅ `docker-compose.yml` and `Dockerfile` use `ENV` or `.env` files.
 
-Use minimal base images - alpine.
+4. **Static files (dependencies) should be managed via an external `volume`.**
+   - ✅ `docker-compose.yml` has `volumes` defined for static files.
 
-✅ Ensure the Dockerfile is based on alpine (e.g., FROM python:3.9-alpine).
+5. **Create a `docker-compose` file for startup and build.**
+   - ✅ `docker-compose.yml` exists and defines services properly.
 
-All application configuration must be done via environment variables.
+6. **Use a database in `docker-compose` (PostgreSQL, MySQL, MongoDB, etc.).**
+   - ✅ Database service is declared in `docker-compose.yml`.
 
-✅ Check that docker-compose.yml and Dockerfile use ENV or .env files.
+7. **Ensure automatic migrations are performed on startup.**
+   - ✅ The entrypoint script or Dockerfile include a migration command (`python setup.py migrate`).
 
-Static files (dependencies) should be managed via an external volume.
+8. **The container should run under a non-root user.**
+   - ✅ `USER` directive in `Dockerfile` to specify a non-root user.
 
-✅ Ensure docker-compose.yml has volumes defined for static files.
-
-Create a docker-compose file for startup and build.
-
-✅ Ensure docker-compose.yml exists and defines services properly.
-
-Use a database in docker-compose (PostgreSQL, MySQL, MongoDB, etc.).
-
-✅ Confirm a database service is declared in docker-compose.yml.
-
-Ensure automatic migrations are performed on startup.
-
-✅ The entrypoint script or Dockerfile should include a migration command (e.g., flask db upgrade or python manage.py migrate).
-
-The container should run under a non-root user.
-
-✅ Use USER directive in Dockerfile to specify a non-root user.
-
-After installing necessary utilities, the cache should be cleared.
-
-✅ Ensure the Dockerfile contains commands like rm -rf /var/cache/apk/* after package installation.
+9. **After installing necessary utilities, the cache should be cleared.**
+   - ✅ Dockerfile contains commands like `rm -rf /var/cache/apk/*` after package installation.

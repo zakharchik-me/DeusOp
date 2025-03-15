@@ -18,4 +18,4 @@ ENV MODEL_PATH=model.pt
 
 EXPOSE 5000
 
-CMD ["python", "main.py"]
+CMD ["python", "setup.py"]
