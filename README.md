@@ -4,14 +4,37 @@
 The goal of this lab is to master the approach of creating a lightweight image by building an application on one image and running it on another. It is recommended to use any open-source application that requires compilation (Java, C/C++, Golang, Node).
 
 ### **Requirements**
-1. The image must be lightweight.
-2. Use base lightweight images - Alpine.
-3. The application must be built in the first image.
-4. The application should run in the second image by copying the artifact.
-5. All configuration must be done via environment variables.
-6. The build and run process should be defined in a single `Dockerfile`.
-7. Each build stage should be executed only if the dependent files change.
-8. Create a `docker-compose` file for building and starting the application.
-9. The container must run as a non-root user.
-10. After installing all necessary utilities, the cache must be cleared.
+# Stage 1: Build the application
+FROM golang:1.21-alpine AS builder
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the source code
+COPY . .
+
+# Build the application
+RUN go build -o myapp .
+
+# Stage 2: Create a lightweight runtime container
+FROM alpine:latest
+
+# Set a non-root user for security
+RUN adduser -D myuser
+USER myuser
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the built application from the builder stage
+COPY --from=builder /app/myapp /app/myapp
+
+# Expose the necessary port (change as needed)
+EXPOSE 8080
+
+# Define environment variables (can be overridden in docker-compose)
+ENV APP_ENV=production
+
+# Run the application
+CMD ["/app/myapp"]
 
