@@ -1,16 +1,21 @@
 version: '3.7'
 
 services:
-  frontend:
-    build:
-      context: ./react-frontend
-    container_name: frontend
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
     env_file:
-      - ./react-frontend/.env
+      - .env
     networks:
       - app-network
-    expose:
-      - 3000
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db-data:/var/lib/mysql
+    restart: always
 
   backend:
     build:
@@ -23,17 +28,25 @@ services:
     expose:
       - 8080
     restart: unless-stopped
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
 
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
+  frontend:
+    build:
+      context: ./react-frontend
+    container_name: frontend
     env_file:
-      - .env
+      - ./react-frontend/.env
     networks:
       - app-network
-    volumes:
-      - db-data:/var/lib/mysql
-    restart: always
+    expose:
+      - ${FRONTEND_PORT}
+    depends_on:
+      - backend
 
   nginx:
     image: nginx:latest
@@ -42,9 +55,12 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./react-frontend/build:/usr/share/nginx/html
     ports:
-      - "80:80"
+      - "${NGINX_PORT}:${NGINX_PORT}"
     networks:
       - app-network
+    depends_on:
+      - backend
+      - frontend
 
 networks:
   app-network:
