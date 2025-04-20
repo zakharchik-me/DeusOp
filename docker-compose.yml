@@ -1,16 +1,35 @@
-version: '3.11'
+version: '3.8'
 
 services:
+  system:
+    build:
+      context: .
+      dockerfile: system.dockerfile
+    image: app-system
+    container_name: build_system
+    restart: "no"
+
+  build:
+    build:
+      context: .
+      dockerfile: build.dockerfile
+    image: app-build
+    container_name: build_app
+    depends_on:
+      - system
+    restart: "no"
+
   app:
     build:
       context: .
-      dockerfile: Dockerfile.build
+      dockerfile: final.dockerfile
     container_name: my_python_app
+    image: app-final
+    depends_on:
+      - build
     restart: unless-stopped
     environment:
       - PYTHONUNBUFFERED=1
-    volumes:
-      - ./app:/app
     working_dir: /app
     env_file:
       - .env
